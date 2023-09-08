@@ -1,0 +1,46 @@
+﻿
+
+Yapı açısından singleton oldukça basittir.
+Bu, özel bir örnekleme ve bu örnekleme başvurmanın tek yolunu sağlayan genel bir statik yönetime sahip tek bir sınıftır.
+Ayrıca private bir ctor'a sahip olmalıdır. Çünkü nesnenin dışarıdan üretilmesi prensibine dayanmamaktadır.
+Singleton deseninde esas amaç nesnenin her daim bir örneklemi oluşturulması ve bu örnekleme üzerinden bütün işlemleri yapılmasıdır.
+Biraz daha açarsak nesnenin kullanım süresi boyunca sadece bir kez oluşturulması ve bir daha oluşturulmaması üzerine kurulu bir mantığı bulunmaktadır.
+
+Singleton modelinin doğası, onu uygulayan sınıfların bir uygulamnın ömrü boyunca herhangi bir zamanda 0 veya 1 olamasıdır.
+Singleton sınıfları parametresiz oluşturulur. Farklı parametrelere dayalı çeşitli benzer örneklere ihtiyacınız varsa, muhtemelen factory design pattern kullanmanız daha doğrudur.
+
+Performans nedeniyle, singelton nesneler genllikle bir şey onlara talep edinceye kadar oluşturulmazlar.
+Bu layz instantition olarak bilinir ve bu kalıbın çoğu uygulaması tarafından varsayılan davranıştır. 
+Ancak, uygulama başladığında ihtiyacımız olan bu örneği basitçe üretmek, oluşturmak ve ardından bu örneği uygulamnın ömrü boyunca kullanmakda mümkündür. 
+Singleton sınıflar tek, özel, parametresiz bir constructor'a sahip olmalıdır.
+
+Singleton'a yapılan tek referans,
+singleton sınıfının karakteristik özelliği özel bir statik alanda olmasıdır.
+Uygulamnın geri kalanı, sınıfın bu amaç için gösterdiği genel bir statik yöntem aracığıyla sınıfın örneklemine erişir ve onu kullanır.
+
+Singleton bir nesne örneğindne sadece bir kez üretilip,o nesnenin örnekleminin her zaman çıkarılmasını önlemektir.
+Örneğin katmanlı mimaride katmanlaar arasında iletişimi sağlayan yani yapılacak işlemleri taşıyan ve üzerinde değer tutmayan bir nesne düşünelim, bu ilgili nesne singleton ile üretilebilir.
+Somut bir örnek vermek gerekirse en son yaptığımız LibraryProject'te repository sınıfları CRUD operasyolarını yürütecej işlemleri tutan yapılar olduklarını gördük, yukarıdaki tnaımdan yola çıkarak bu repository sınıflarının singleton ile üretilebileciğini söyleyebilriir.
+Başka bir örnek vermek gerekirse Repository içerisine çağrılan ApplicationDbContext.cs sınıfının nesnesinine singleton ile üretebiliriz. Düşünürsek ApplicationDbContext.cs sınıfımda yukarıdaki tanıma uymaktadır. İlgili nesne değer tutmaz, sadece bir posta memuru gibi iletimi sağlar.
+
+Singleton nesnenin sadece bir kez üretilmesi için kullanılmaktaydı.
+Bunun yanında nesnenin kontrollü bir şekilde belirli bir şart veya şartlar doğrultusunda üretilmesinide temin etmektedir.
+Buradaki tanımdan şuraya gidebiliriz, başka bir mekanizmaya kontrollü bir şekilde geçmek istediğimizde singleton tercih edebiliriz.
+Bu konrtolü nasıl temin ettğinin düşünecek olursa singleton ile üretilmiş nesneler bir kez başlatıldığından ve tüm taleplerin ona uğrayacak olmasından dolayı isteklerin yönlendirilmesinde kullanılabilinir.
+
+Singleton ile üretilmiş nesnelerin kendisine has karakteristik bir yaşam döngüsü bulunmaktadır.
+Bu yüzden önümüze gelen nesneleri singleton ile üretmemeliyiz. Singleton üretilen nesneler statik sınıflar gibi
+RAM üzerinde yaşam alanları belirecektir. RAM'İn Heap alanında yaşarlar lakin projenin koştuğu server reset edilinceye kadar yaşarlar. Bu durum memory maliyeti olarka bize geri döner. Örneğin yıl sonunda çalışacak bir servisi singleton 
+ile üretmemeliyiz. 
+Çünkü bu servis sadece yıl sonunda bir kez kullanılacaktır. Bu senaryoda projenin canlıya alındığını ve 
+yıl sonunda bu servise talep geldiği için singleton ile örneklemi oluşturulduğunu düşünelim, bu nesne artık
+RAM'den kaldırılmayacaltır taki server reset edilinceye kadar , diyelim ki reset edilmedi ilgili örneklem business gereği bir daha
+bir sonraki yıl çalışacaktır. 
+
+Singleton antipattern'dır.
+Bunun nedeni, 
+uygulnadıkları bir arabirimi iletemek yerine kodda doğrudan statik bir kullanıldıklarından, sınıflar arasında tight couple
+bir ilişkiye sebebiyet verirler. Private constructor ve statik yapıları yüzünden bağımlılık enjeksiyonuna (DI) uygun değildirler.
+Ayrıca, bu modeli takip eden sınıflar gerçek işlerinin yanı sıra örneklem yaşam sürelerini yönetmekten sorumlu olacağından ,
+endişelerin ayrılması prensibine  (seperation of concerns) ve tek sorumluluk ilkesine (SRP) ters düşmektedir.
+Birden fazla singleton uygulayacaksanız, singleton davranışnı zorlamak için gereken tüm mantığı çoğaltmamız gerekecektir, bu aynı zamanda kendinizi tekrar etmeniz (Don't Repeat Yourself) ilkesine de ihlal ettiğiniz anlamına gelir.
